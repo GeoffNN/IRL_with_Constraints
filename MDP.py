@@ -35,9 +35,10 @@ class MDP:
         return Q
 
     def bellman_estimator(self, policy, thresh=0.01):
+        """Computes the values of a given policy"""
         values = np.random.rand(len(self.states))
-        new_values = self.bellman_operator(values, policy)
+        new_values = self.bellman_operator(policy, values)
         while np.max(abs(new_values - values)) > thresh:
             values = new_values
-            new_values = self.bellman_operator(values, policy)
+            new_values = self.bellman_operator(policy, values)
         return new_values
