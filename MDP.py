@@ -35,7 +35,7 @@ class MDP:
 
     def bellman_operator(self, policy, values):
         result = self.rewards
-        result += self.gamma * np.array([self.dynamics[x, policy[x]] for x in self.states]).dot(values)
+        result += self.gamma * np.array([self.dynamics[x, policy.next_action(x)] for x in self.states]).dot(values)
         return result
 
     def q_function(self, policy):
