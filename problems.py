@@ -13,7 +13,6 @@ def easy_maze_init(side=5, gamma=.9):
     actions = [left, right, up, down]
     n_actions = len(actions)
     dynamics = np.zeros((n_squares, n_actions))
-    # dynamics contains the index id of the next state - to get a (j,k) representation, do : (j, k) = np.unravel(idx, (side, side))
     for k in range(n_squares):
         dynamics[k, up] = np.ravel_multi_index(np.array(np.unravel_index(k, (side, side))) + (-1, 0), (side, side),
                                                'clip')
@@ -25,7 +24,7 @@ def easy_maze_init(side=5, gamma=.9):
                                                  'clip')
     # Single reward in last square
     rewards = np.zeros(n_squares)
-    rewards[n_squares - 1] = 100
+    rewards[n_squares-1] = 100
 
     return states, actions, dynamics, rewards, gamma
 
