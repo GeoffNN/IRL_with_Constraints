@@ -1,6 +1,6 @@
-from scipy.stats import rv_discrete
 import numpy as np
-
+from scipy.stats import rv_discrete
+from policy import Policy
 
 class MDP:
     def __init__(self, states, actions, dynamics, rewards, gamma):
@@ -14,7 +14,20 @@ class MDP:
         self.rewards = rewards
         self.gamma = gamma
 
-    def simulate(self, state, action):
+    def simulate(self, x_0, policy, n_trajectories=100, trajectory_length=1000):
+        trajectories = np.zeros((n_trajectories, trajectory_length))
+        rewards = np.zeros((n_trajectories, trajectory_length))
+        state = x_0
+        for k in n_trajectories:
+            for j in trajectory_length:
+                trajectories[k, j] = state
+                action = policy.next_action(state)
+                next_state, rew = self.simulate_next_state(state, action)
+                rewards[k, j] = rew
+                state = next_state
+        return trajectories, rewards
+
+    def simulate_next_state(self, state, action):
         rand_var = rv_discrete(values=(self.states, self.dynamics[state, action]))
         next_state = rand_var.rvs()
         reward = self.rewards[next_state]

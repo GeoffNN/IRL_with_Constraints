@@ -77,4 +77,3 @@ dependencies:
   - jupyter-core==4.2.0
   - prompt-toolkit==1.0.9
 prefix: /home/geoff/anaconda3/envs/irl_env
-
