@@ -24,7 +24,7 @@ def easy_maze_init(side=5, gamma=.9):
                                                  'clip')
     # Single reward in last square
     rewards = np.zeros(n_squares)
-    rewards[n_squares-1] = 100
+    rewards[n_squares - 1] = 100
 
     return states, actions, dynamics, rewards, gamma
 
