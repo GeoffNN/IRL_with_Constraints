@@ -33,29 +33,34 @@ class EasyMaze(MDP):
         # Single reward in last square
         rewards = np.zeros(self.n_squares)
         rewards[self.n_squares - 1] = 100
-        super().__init__(states, actions, dynamics, rewards, [self.n_squares-1], gamma)
+        super().__init__(states, actions, dynamics, rewards, [self.n_squares - 1], gamma)
 
+    def plot_trajectory(self, trajectory):
+        agg = np.zeros((self.side, self.side))
+        for i in self.states:
+            if i not in self.term_states:
+                agg[np.unravel_index(i, (self.side, self.side))] = np.sum(trajectory == i)
+            else:
+                agg[np.unravel_index(i, (self.side, self.side))] = 1
+        sb.heatmap(agg)
 
-
-
-def plot_Easy_Maze_trajectory(maze, trajectory):
-    agg = np.zeros((len(maze.states), len(maze.states)))
-    for i in maze.states:
-        agg[np.unravel_index(i, (maze.side, maze.side))] = np.sum(trajectory[trajectory == i])
-    sb.heatmap(agg)
-
+    def plot_reward(self):
+        agg = np.zeros((self.side, self.side))
+        for i in self.states:
+            agg[np.unravel_index(i, (self.side, self.side))] = self.rewards[i]
+        sb.heatmap(agg)
 
 Easy_Maze = EasyMaze()
 
-simple_pol_arr = np.zeros(len(Easy_Maze.states))
+opt_pol_arr = np.zeros(len(Easy_Maze.states))
 for x in Easy_Maze.states:
     j, k = np.unravel_index(x, (Easy_Maze.side, Easy_Maze.side))
     if j >= k:
-        simple_pol_arr[x] = Easy_Maze.right
+        opt_pol_arr[x] = Easy_Maze.right
     else:
-        simple_pol_arr[x] = Easy_Maze.down
+        opt_pol_arr[x] = Easy_Maze.down
 
-simple_pol = Policy(simple_pol_arr)
+opt_pol = Policy(opt_pol_arr)
 
-
-Easy_Maze.simulate_next_state(19, Easy_Maze.down)
+traj, rews = Easy_Maze.simulate(0, opt_pol, 1)
+Easy_Maze.plot_trajectory(traj)
