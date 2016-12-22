@@ -1,7 +1,6 @@
 """Here we define the MDPs on which we test our algorithms."""
 from MDP import MDP
 import numpy as np
-from policy import Policy
 import seaborn as sb
 
 
@@ -50,17 +49,3 @@ class EasyMaze(MDP):
             agg[np.unravel_index(i, (self.side, self.side))] = self.rewards[i]
         sb.heatmap(agg)
 
-Easy_Maze = EasyMaze()
-
-opt_pol_arr = np.zeros(len(Easy_Maze.states))
-for x in Easy_Maze.states:
-    j, k = np.unravel_index(x, (Easy_Maze.side, Easy_Maze.side))
-    if j >= k:
-        opt_pol_arr[x] = Easy_Maze.right
-    else:
-        opt_pol_arr[x] = Easy_Maze.down
-
-opt_pol = Policy(opt_pol_arr)
-
-traj, rews = Easy_Maze.simulate(0, opt_pol, 1)
-Easy_Maze.plot_trajectory(traj)
