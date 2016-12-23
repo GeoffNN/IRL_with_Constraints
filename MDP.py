@@ -2,6 +2,7 @@ import numpy as np
 from scipy.stats import rv_discrete
 from policy import Policy
 
+
 class MDP:
     def __init__(self, states, actions, dynamics, rewards, term_states, gamma):
         self.states = states
@@ -59,3 +60,4 @@ class MDP:
             values = new_values
             new_values = self.bellman_operator(policy, values)
         return new_values
+
