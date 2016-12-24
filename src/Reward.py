@@ -25,5 +25,4 @@ class RewardFunction:
         """
         V = np.array([np.sum(np.array([gamma ** k * self.basis[i][state] for (k, state) in np.ndenumerate(trajectories)])) for i in range(self.dim_approx)])
         V = np.dot(self.weights, V)
-        return V
-
+return V
