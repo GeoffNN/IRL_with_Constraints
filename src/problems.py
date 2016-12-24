@@ -3,6 +3,7 @@ import numpy as np
 import seaborn as sb
 
 from src.MDP import MDP
+from src.reward import RewardFunction
 
 
 class EasyMaze(MDP):
@@ -33,7 +34,11 @@ class EasyMaze(MDP):
         # Single reward in last square
         rewards = np.zeros(self.n_squares)
         rewards[self.n_squares - 1] = 100
-        super().__init__(states, actions, dynamics, rewards, [self.n_squares - 1], gamma)
+
+        # A changer c est bien de la merde la
+        reward_function = RewardFunction([1],[1])
+
+        super().__init__(states, actions, dynamics, reward_function, rewards, [self.n_squares - 1], gamma)
 
     def plot_trajectory(self, trajectory):
         agg = np.zeros((self.side, self.side))
@@ -44,9 +49,9 @@ class EasyMaze(MDP):
                 agg[np.unravel_index(i, (self.side, self.side))] = 1
         sb.heatmap(agg)
 
-    def plot_reward(self):
+    def plot_true_reward(self):
         agg = np.zeros((self.side, self.side))
         for i in self.states:
-            agg[np.unravel_index(i, (self.side, self.side))] = self.rewards[i]
+            agg[np.unravel_index(i, (self.side, self.side))] = self.true_reward[i]
         sb.heatmap(agg)
 
