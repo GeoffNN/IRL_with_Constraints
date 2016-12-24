@@ -1,6 +1,5 @@
 import numpy as np
 from scipy.stats import rv_discrete
-from policy import Policy
 
 
 class MDP:

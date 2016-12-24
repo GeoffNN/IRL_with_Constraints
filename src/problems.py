@@ -1,7 +1,8 @@
 """Here we define the MDPs on which we test our algorithms."""
-from MDP import MDP
 import numpy as np
 import seaborn as sb
+
+from src.MDP import MDP
 
 
 class EasyMaze(MDP):
