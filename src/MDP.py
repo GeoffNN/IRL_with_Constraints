@@ -32,7 +32,6 @@ class MDP:
         rand_var = rv_discrete(values=(self.states, self.dynamics[state, action]))
         next_state = rand_var.rvs()
         reward = self.true_reward[next_state]
-
         return next_state, reward
 
     def simulate(self, x_0, policy, n_trajectories=100, trajectory_length=1000):
@@ -83,9 +82,10 @@ class MDP:
         '''
             Implement the bellman_operator_optimal : W --> T*(W), given Reward, Proba_transition, and discount_factor
         '''
+
         def bellman_operator_optimal(W, actions, R, P, gamma):
-            reward = np.array([R[x] for x in range(len(W)) ] )
-            t = np.array([[np.dot( P[x,a] , W ) for a in actions] for x in range(len(W))])
+            reward = np.array([R[x] for x in range(len(W))])
+            t = np.array([[np.dot(P[x, a], W) for a in actions] for x in range(len(W))])
             u = reward + gamma * t
 
             return np.max(u, axis=1)
@@ -100,20 +100,21 @@ class MDP:
                     - nb_step : the number of iterations we do.
             Output: - The optimal policy pi
         '''
-        def value_iteration(R,actions, P, gamma, nb_step):
+
+        def value_iteration(R, actions, P, gamma, nb_step):
             nb_state_possible = len(P)
-            # W_over_time = np.zeros((nb_step,nb_state_possible))
+            #  W_over_time = np.zeros((nb_step,nb_state_possible))
             W = np.zeros(nb_state_possible)
 
             for k in range(nb_step):
                 W = bellman_operator_optimal(W, actions, R, P, gamma)
-                # W_over_time[k] = W
+                #  W_over_time[k] = W
 
-            t = np.array([[np.dot( P[x,a] , W ) for a in actions] for x in range(nb_state_possible)])
+            t = np.array([[np.dot(P[x, a], W) for a in actions] for x in range(nb_state_possible)])
             u = R + gamma * t
 
             pi = Policy(np.array([np.argmax(u[i]) for i in range(nb_state_possible)]))
-            # V = np.array([u[x, pi[x]] for x in range(nb_state_possible)])
+            #  V = np.array([u[x, pi[x]] for x in range(nb_state_possible)])
             return pi
 
         optimal_policy = value_iteration(self.true_reward, self.actions, self.dynamics, self.gamma, nb_step=100)

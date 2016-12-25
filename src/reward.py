@@ -8,6 +8,8 @@ class RewardFunction:
     # basis are (dim_approx x states) matrix
     # weights are (dim_approx) array
     def __init__(self, basis, weights):
+        assert len(weights) > 0
+        assert len(basis) == len(weights)
         self.dim_approx = len(weights)
         self.basis = basis
         self.weights = weights
@@ -15,6 +17,7 @@ class RewardFunction:
 
     def update(self, weights):
         # Performs the update of the reward for new computed weight
+        self.weights = weights
         self.reward = np.dot(weights, self.basis)
 
     def estimatedvalue(self, trajectories, gamma, x_0):
