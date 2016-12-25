@@ -17,6 +17,7 @@ class RewardFunction:
 
     def update(self, weights):
         # Performs the update of the reward for new computed weight
+        assert len(weights) == len(self.basis)
         self.weights = weights
         self.reward = np.dot(weights, self.basis)
 
