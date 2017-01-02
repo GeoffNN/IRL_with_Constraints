@@ -1,6 +1,7 @@
 import numpy as np
 
 
+# TODO: change for R(s, s') instead of R(s)
 class RewardFunction:
     """Describe a reward function as a linear combination of function in a given basis"""
 
@@ -16,12 +17,12 @@ class RewardFunction:
         self.reward = np.dot(weights, basis)
 
     def update(self, weights):
-        # Performs the update of the reward for new computed weight
+        """Performs the update of the reward for new computed weight"""
         assert len(weights) == len(self.basis)
         self.weights = weights
         self.reward = np.dot(weights, self.basis)
 
-    def estimatedvalue(self, trajectories, gamma, x_0):
+    def estimated_value(self, trajectories, gamma, x_0):
         """ Compute the estimated value as a linear combination of accumulated reward for a given trajectories
             Assuming the trajectories are simulated by a given policy, gives an estimation of the value of this policy
             Input : trajectories (nb_trajectories x length_trajectories) array

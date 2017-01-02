@@ -16,11 +16,12 @@ class MDP:
         # which correspond to a matrix such as reward[state] = rew
         # Meanwhile, true_reward is just a matrix giving the ground_truth. Must not be used EXCEPT
         # to compute the (supposed unknown) optimal policy of our problem and simulate a sample of
-        # trajectories from that.
+        # trajectories from that, or to compare the computed reward with the ground truth
         assert len(true_reward) == len(states)
         self.reward_function = reward_function
         self.true_reward = true_reward
         self.term_states = term_states
+        assert 0 <= gamma <= 1
         self.gamma = gamma
 
     def simulate_next_state(self, state, action):

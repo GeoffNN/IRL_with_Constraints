@@ -20,25 +20,37 @@ class EasyMaze(MDP):
         dynamics = np.zeros((self.n_squares, n_actions, self.n_squares))
         for k in range(self.n_squares):
             dynamics[k, self.up] = [
-                1 if j == np.ravel_multi_index(np.array(np.unravel_index(k, (side, side))) + (-1, 0), (side, side),
-                                               'clip') else 0 for j in states]
+                1 if j == self.up_square(k) else 0 for j in states]
             dynamics[k, self.down] = [
-                1 if j == np.ravel_multi_index(np.array(np.unravel_index(k, (side, side))) + (1, 0), (side, side),
-                                               'clip') else 0 for j in states]
+                1 if j == self.down_square(k) else 0 for j in states]
             dynamics[k, self.right] = [
-                1 if j == np.ravel_multi_index(np.array(np.unravel_index(k, (side, side))) + (0, 1), (side, side),
-                                               'clip') else 0 for j in states]
+                1 if j == self.right_square(k) else 0 for j in states]
             dynamics[k, self.left] = [
-                1 if j == np.ravel_multi_index(np.array(np.unravel_index(k, (side, side))) + (0, -1), (side, side),
-                                               'clip') else 0 for j in states]
+                1 if j == self.left_square(k) else 0 for j in states]
         # Single reward in last square
         rewards = np.zeros(self.n_squares)
         rewards[self.n_squares - 1] = 100
 
         # A changer c est bien de la merde la
-        reward_function = RewardFunction([1],[1])
+        reward_function = RewardFunction([1], [1])
 
         super().__init__(states, actions, dynamics, reward_function, rewards, [self.n_squares - 1], gamma)
+
+    def up_square(self, k):
+        return np.ravel_multi_index(np.array(np.unravel_index(k, (self.side, self.side))) + (-1, 0),
+                                    (self.side, self.side), 'clip')
+
+    def down_square(self, k):
+        return np.ravel_multi_index(np.array(np.unravel_index(k, (self.side, self.side))) + (1, 0),
+                                    (self.side, self.side), 'clip')
+
+    def right_square(self, k):
+        return np.ravel_multi_index(np.array(np.unravel_index(k, (self.side, self.side))) + (0, 1),
+                                    (self.side, self.side), 'clip')
+
+    def left_square(self, k):
+        return np.ravel_multi_index(np.array(np.unravel_index(k, (self.side, self.side))) + (0, -1),
+                                    (self.side, self.side), 'clip')
 
     def plot_trajectory(self, trajectory):
         agg = np.zeros((self.side, self.side))
@@ -54,4 +66,3 @@ class EasyMaze(MDP):
         for i in self.states:
             agg[np.unravel_index(i, (self.side, self.side))] = self.true_reward[i]
         sb.heatmap(agg)
-
