@@ -21,9 +21,14 @@ def constraints_nonneg(mdp, reward):
     return matrix(G), matrix(h)
 
 
-def compute_reward_nonneg(mdp, reward):
+def compute_potential_nonneg(mdp, reward):
     P = objective_matrix_nonneg(mdp, reward)
     q = matrix(np.zeros(mdp.nb_states))
     G, h = constraints_nonneg(mdp, reward)
     sol = solvers.qp(P, q, G, h)
     return sol['x']
+
+
+def compute_reward_nonneg(mdp, reward):
+    phi = compute_potential_nonneg(mdp, reward)
+    return np.array([[mdp.gamma * r1 - r2 for r1 in phi] for r2 in phi])

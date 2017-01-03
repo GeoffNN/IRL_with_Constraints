@@ -29,13 +29,18 @@ class EasyMaze(MDP):
             dynamics[k, self.left] = [
                 1 if j == self.left_square(k) else 0 for j in states]
         # Single reward in last square
-        rewards = np.zeros(self.n_squares)
-        rewards[self.n_squares - 1] = 100
-
-        # A changer c est bien de la merde la
+        rewards = np.zeros((self.n_squares, self.n_squares))
+        for j in self.neighbors(self.n_squares - 1):
+            rewards[j, -1] = 1
+        # TODO: hardcode the realone
         reward_function = RewardFunction([1], [1])
 
         super().__init__(states, actions, dynamics, reward_function, rewards, [self.n_squares - 1], gamma)
+
+    def neighbors(self, k):
+        for j in self.up_square(k), self.down_square(k), self.right_square(k), self.left_square(k):
+            if j != k:
+                yield j
 
     def up_square(self, k):
         return np.ravel_multi_index(np.array(np.unravel_index(k, (self.side, self.side))) + (-1, 0),

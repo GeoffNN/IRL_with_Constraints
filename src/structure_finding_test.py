@@ -1,4 +1,5 @@
 import numpy as np
+import seaborn as sb
 from numpy.linalg import cholesky
 from scipy.stats import norm
 
@@ -6,10 +7,9 @@ from problems import EasyMaze
 from structure_finding import compute_reward_nonneg, constraints_nonneg, objective_matrix_nonneg
 
 
-def reward_tryout(length):
+def reward_tryout(mdp):
     """Gives a typical reward to tune"""
-    rew = np.zeros(length)
-    rew[-1] = 1
+    rew = mdp.true_reward
     # Add noise
     rew += norm.rvs(0, 0.1, len(rew))
     return rew
@@ -17,7 +17,7 @@ def reward_tryout(length):
 
 def test_constraints_nonneg():
     easy_maze = EasyMaze()
-    rew = reward_tryout(easy_maze.nb_states ** 2)
+    rew = reward_tryout(easy_maze)
     G, h = constraints_nonneg(easy_maze, rew)
     assert np.all(np.array(G).sum(axis=1) == (1 - easy_maze.gamma) * np.ones(easy_maze.nb_states ** 2))
     assert G.size[0] == h.size[0]
@@ -25,14 +25,16 @@ def test_constraints_nonneg():
 
 def test_objective_mat_nonneg_test():
     easy_maze = EasyMaze()
-    rew = reward_tryout(easy_maze.nb_states ** 2)
+    rew = reward_tryout(easy_maze)
     Q = objective_matrix_nonneg(easy_maze, rew)
     assert np.array(Q).shape == (easy_maze.nb_states, easy_maze.nb_states)
+    # Tests if Q is positive definite (cubic in Q.size)
     cholesky(Q)
 
 
 def test_nonneg_result():
     easy_maze = EasyMaze()
-    rew = reward_tryout(easy_maze.nb_states ** 2)
-    reward = np.array(compute_reward_nonneg(easy_maze, rew))
-    assert np.all(easy_maze.gamma * np.abs(np.array([[r1 - r2 for r1 in reward] for r2 in reward]) < .5))
+    rew = reward_tryout(easy_maze)
+    var_rew = compute_reward_nonneg(easy_maze, rew)
+    sb.heatmap(var_rew)
+    assert np.all(var_rew < .5)
