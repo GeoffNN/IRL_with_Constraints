@@ -32,7 +32,7 @@ class EasyMaze(MDP):
         rewards = np.zeros((self.n_squares, self.n_squares))
         for j in self.neighbors(self.n_squares - 1):
             rewards[j, -1] = 1
-        # TODO: hardcode the realone
+        # TODO: set a reward_function of form R(x,y)
         reward_function = RewardFunction([1], [1])
 
         super().__init__(states, actions, dynamics, reward_function, rewards, [self.n_squares - 1], gamma)
