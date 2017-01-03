@@ -6,11 +6,12 @@ from src.MDP import MDP
 from src.reward import RewardFunction
 
 
-class EasyMaze(MDP):
+class GridWorld(MDP):
     # TODO: Change dynamics for slight random behavior
-    def __init__(self, side=5, gamma=.9):
+    def __init__(self, side=5, gamma=.9, wind=.3):
         self.n_squares = side ** 2
         self.side = side
+        self.wind = wind
         states = np.array(range(self.n_squares))
         self.left = 0
         self.right = 1
@@ -19,20 +20,25 @@ class EasyMaze(MDP):
         actions = [self.left, self.right, self.up, self.down]
         n_actions = len(actions)
         dynamics = np.zeros((self.n_squares, n_actions, self.n_squares))
+        # Set dynamics
         for k in range(self.n_squares):
-            dynamics[k, self.up] = [
-                1 if j == self.up_square(k) else 0 for j in states]
-            dynamics[k, self.down] = [
-                1 if j == self.down_square(k) else 0 for j in states]
-            dynamics[k, self.right] = [
-                1 if j == self.right_square(k) else 0 for j in states]
-            dynamics[k, self.left] = [
-                1 if j == self.left_square(k) else 0 for j in states]
-        # Single reward in last square
+            dynamics[k, self.up] = np.array([
+                                                1 - self.wind if j == self.up_square(k) else 0 for j in states])
+            dynamics[k, self.down] = np.array([
+                                                  1 - self.wind if j == self.down_square(k) else 0 for j in states])
+            dynamics[k, self.right] = np.array([
+                                                   1 - self.wind if j == self.right_square(k) else 0 for j in states])
+            dynamics[k, self.left] = np.array([
+                                                  1 - self.wind if j == self.left_square(k) else 0 for j in states])
+            neighbors = list(self.neighbors(k))
+            for j in neighbors:
+                dynamics[k, :, j] += self.wind / len(neighbors)
+
+        # Reward for transition to the exit
         rewards = np.zeros((self.n_squares, self.n_squares))
         for j in self.neighbors(self.n_squares - 1):
             rewards[j, -1] = 1
-        # TODO: set a reward_function of form R(x,y)
+        # TODO: set a reward of form R(x,y)
         reward_function = RewardFunction([1], [1])
 
         super().__init__(states, actions, dynamics, reward_function, rewards, [self.n_squares - 1], gamma)

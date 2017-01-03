@@ -3,7 +3,7 @@ import seaborn as sb
 from numpy.linalg import cholesky
 from scipy.stats import norm
 
-from problems import EasyMaze
+from problems import GridWorld
 from structure_finding import compute_reward_nonneg, constraints_nonneg, objective_matrix_nonneg
 
 
@@ -16,7 +16,7 @@ def reward_tryout(mdp):
 
 
 def test_constraints_nonneg():
-    easy_maze = EasyMaze()
+    easy_maze = GridWorld()
     rew = reward_tryout(easy_maze)
     G, h = constraints_nonneg(easy_maze, rew)
     assert np.all(np.array(G).sum(axis=1) == (1 - easy_maze.gamma) * np.ones(easy_maze.nb_states ** 2))
@@ -24,7 +24,7 @@ def test_constraints_nonneg():
 
 
 def test_objective_mat_nonneg_test():
-    easy_maze = EasyMaze()
+    easy_maze = GridWorld()
     rew = reward_tryout(easy_maze)
     Q = objective_matrix_nonneg(easy_maze, rew)
     assert np.array(Q).shape == (easy_maze.nb_states, easy_maze.nb_states)
@@ -33,7 +33,7 @@ def test_objective_mat_nonneg_test():
 
 
 def test_nonneg_result():
-    easy_maze = EasyMaze()
+    easy_maze = GridWorld()
     rew = reward_tryout(easy_maze)
     var_rew = compute_reward_nonneg(easy_maze, rew)
     sb.heatmap(var_rew)

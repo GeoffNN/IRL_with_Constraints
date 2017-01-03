@@ -1,10 +1,10 @@
-import numpy as np
+from numpy import allclose
 
-from problems import EasyMaze
+from problems import GridWorld
 
 
-def test_easy_maze_dynamics():
-    # Tests that dynamics probabilities sums to 1 for each action
-    easy_maze = EasyMaze()
-    for a in easy_maze.actions:
-        assert (easy_maze.dynamics[:, a].sum(axis=1) == np.ones(easy_maze.nb_states)).sum() == easy_maze.nb_states
+def test_gridworld_dynamics():
+    """Tests that dynamics probabilities sums to 1 for each action"""
+    gridworld = GridWorld()
+    for a in gridworld.actions:
+        assert allclose(gridworld.dynamics[:, a, :].sum(axis=1), 1)

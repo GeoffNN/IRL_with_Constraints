@@ -5,20 +5,20 @@ from src.policy import Policy
 
 
 class MDP:
-    def __init__(self, states, actions, dynamics, reward_function, true_reward, term_states, gamma):
+    def __init__(self, states, actions, dynamics, reward, true_reward, term_states, gamma):
         self.states = states
         self.nb_states = states.size
         self.actions = actions
         # dynamics[state, action] is the list of probabilities for next_state
         assert dynamics.shape == (len(states), len(actions), len(states))
         self.dynamics = dynamics
-        # Important : reward_function contains three fields : basis, weights (mutable), and reward,
+        # Important : reward contains three fields : basis, weights (mutable), and reward,
         # which correspond to a matrix such as reward[state] = rew
         # Meanwhile, true_reward is just a matrix giving the ground_truth. Must not be used EXCEPT
         # to compute the (supposed unknown) optimal policy of our problem and simulate a sample of
         # trajectories from that, or to compare the computed reward with the ground truth
         assert len(true_reward) == len(states)
-        self.reward_function = reward_function
+        self.reward = reward
         self.true_reward = true_reward
         self.term_states = term_states
         assert 0 <= gamma <= 1
@@ -52,7 +52,7 @@ class MDP:
         return trajectories, rewards
 
     def bellman_operator(self, policy, values):
-        result = self.reward_function.reward
+        result = self.reward.reward
         result += self.gamma * np.array([self.dynamics[x, policy.next_action(x)] for x in self.states]).dot(values)
         return result
 
@@ -69,7 +69,7 @@ class MDP:
         """ Compute Q-function for current estimation of the reward """
         values = self.bellman_estimator(policy)
         Q = np.zeros(len(self.states), len(self.actions))
-        Q += self.reward_function.reward
+        Q += self.reward.reward
         for x in self.states:
             for a in self.actions:
                 Q[x, a] += self.gamma * np.array([self.dynamics[x, a] for x in self.states]).dot(values)
