@@ -7,6 +7,7 @@ from src.reward import RewardFunction
 
 
 class EasyMaze(MDP):
+    # TODO: Change dynamics for slight random behavior
     def __init__(self, side=5, gamma=.9):
         self.n_squares = side ** 2
         self.side = side
